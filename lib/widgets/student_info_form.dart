@@ -10,7 +10,7 @@ class StudentInfoForm extends StatefulWidget {
 
 class _StudentInfoFormState extends State<StudentInfoForm> {
   final _formKey = GlobalKey<FormState>();
-  final info = StudentInfo.empty();
+  final info = StudentInfo.current;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +40,7 @@ class _StudentInfoFormState extends State<StudentInfoForm> {
               _formKey.currentState?.save();
               StudentInfo.current = info;
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Info Saved')));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Saved: ${info.name}, Roll: ${info.roll}')));
             },
             child: const Text('Save Info'),
           ),

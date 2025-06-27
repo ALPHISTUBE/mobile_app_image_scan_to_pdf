@@ -5,7 +5,7 @@ class ScannerService {
   static List<String> scannedPaths = [];
 
   static Future<void> scanPages(BuildContext context) async {
-    final images = await CunningDocumentScanner.getPictures();
+    final images = await CunningDocumentScanner.getPictures(isGalleryImportAllowed:true);
     if (images != null) {
       scannedPaths = images;
       ScaffoldMessenger.of(context).showSnackBar(

@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         MaterialPageRoute(
           builder: (_) => const FinalizeScreen(),
         ),
-      ).then((_) => _loadSavedPdfFiles()); // Reload PDFs after returning
+      ).then((_) => _loadSavedPdfFiles());
     }
   }
 
@@ -81,14 +81,24 @@ class _HomeScreenState extends State<HomeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Open PDF: ${file.path}')),
     );
-    // You can use open_file or another PDF viewer package here
+    // Add logic to open file if needed
+  }
+
+  String formatBytes(int bytes) {
+    if (bytes >= 1024 * 1024) {
+      return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
+    } else if (bytes >= 1024) {
+      return '${(bytes / 1024).toStringAsFixed(2)} KB';
+    } else {
+      return '$bytes B';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Exported PDFs'),
+        title: const Text('PaperSnap'),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
@@ -96,41 +106,44 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _pdfFiles.isEmpty
-          ? const Center(child: Text('No exported PDFs yet.'))
-          : ListView.builder(
-        itemCount: _pdfFiles.length,
-        itemBuilder: (context, index) {
-          final file = _pdfFiles[index];
-          final fileName = file.path.split('/').last;
-          final fileSize = file.lengthSync(); // in bytes
+      body: Column(
+        children: [
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _pdfFiles.isEmpty
+                ? const Center(child: Text('No exported PDFs yet.'))
+                : ListView.builder(
+              itemCount: _pdfFiles.length,
+              itemBuilder: (context, index) {
+                final file = _pdfFiles[index];
+                final fileName = file.path.split('/').last;
+                final fileSize = file.lengthSync();
 
-          String formatBytes(int bytes) {
-            if (bytes >= 1024 * 1024) {
-              return '${(bytes / (1024 * 1024)).toStringAsFixed(2)} MB';
-            } else if (bytes >= 1024) {
-              return '${(bytes / 1024).toStringAsFixed(2)} KB';
-            } else {
-              return '$bytes B';
-            }
-          }
-
-          return ListTile(
-            leading: const Icon(Icons.picture_as_pdf),
-            title: Text(fileName),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Size: ${formatBytes(fileSize)}'),
-                Text('Path: ${file.path}', style: const TextStyle(fontSize: 11)),
-              ],
+                return ListTile(
+                  leading: const Icon(Icons.picture_as_pdf),
+                  title: Text(fileName),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Size: ${formatBytes(fileSize)}'),
+                      Text('Path: ${file.path}', style: const TextStyle(fontSize: 11)),
+                    ],
+                  ),
+                  isThreeLine: true,
+                  onTap: () => _openPdf(file),
+                );
+              },
             ),
-            isThreeLine: true,
-            onTap: () => _openPdf(file),
-          );
-        },
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              'Created by WUB Alphi 70B 4688',
+              style: TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _startScanningFlow,

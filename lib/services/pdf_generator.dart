@@ -5,7 +5,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'scanner_service.dart';
 import '../models/student_info.dart';
@@ -15,24 +14,28 @@ class PdfGenerator {
     final pdf = pw.Document();
     final info = StudentInfo.current;
 
-    print('Generating PDF for: ${info.name}, ${info.roll}, ${info.batch}, ${info.subject}');
+    print('Generating PDF for: ${info.name}, ${info.registrationId}, ${info.program}, ${info.batch}, ${info.roll}, ${info.courseName}');
     print('Scanned pages: ${ScannerService.scannedPaths.length}');
 
     // Cover Page
     pdf.addPage(
       pw.Page(
-        margin: const pw.EdgeInsets.all(40), // optional: you can reduce or remove this
+        margin: const pw.EdgeInsets.all(40),
         build: (context) => pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start, // ✅ Align text to the left
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
           mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
             pw.Text('Name: ${info.name}', style: pw.TextStyle(fontSize: 24)),
-            pw.SizedBox(height: 12),
-            pw.Text('Roll: ${info.roll}', style: pw.TextStyle(fontSize: 24)),
-            pw.SizedBox(height: 12),
+            pw.SizedBox(height: 10),
+            pw.Text('Registration ID: ${info.registrationId}', style: pw.TextStyle(fontSize: 24)),
+            pw.SizedBox(height: 10),
+            pw.Text('Program: ${info.program}', style: pw.TextStyle(fontSize: 24)),
+            pw.SizedBox(height: 10),
             pw.Text('Batch: ${info.batch}', style: pw.TextStyle(fontSize: 24)),
-            pw.SizedBox(height: 12),
-            pw.Text('Subject: ${info.subject}', style: pw.TextStyle(fontSize: 24)),
+            pw.SizedBox(height: 10),
+            pw.Text('Roll Number: ${info.roll}', style: pw.TextStyle(fontSize: 24)),
+            pw.SizedBox(height: 10),
+            pw.Text('Course Name: ${info.courseName}', style: pw.TextStyle(fontSize: 24)),
           ],
         ),
       ),
@@ -44,7 +47,7 @@ class PdfGenerator {
       pdf.addPage(
         pw.Page(
           pageFormat: PdfPageFormat.a4,
-          margin: pw.EdgeInsets.zero, // ✅ Remove all page margins
+          margin: pw.EdgeInsets.zero,
           build: (_) => pw.Image(
             image,
             fit: pw.BoxFit.fill,
@@ -80,13 +83,15 @@ class PdfGenerator {
       if (!await dir.exists()) await dir.create(recursive: true);
 
       final safeName = info.name.replaceAll(' ', '_');
-      final safeSubject = info.subject.replaceAll(' ', '_');
-      outputPath = '${dir.path}/${safeName}_${info.roll}_${safeSubject}_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final safeCourse = info.courseName.replaceAll(' ', '_');
+      final safeRegId = info.registrationId.replaceAll(RegExp(r'[^\w\d]+'), '_');
+
+      outputPath = '${dir.path}/${safeName}_${safeRegId}_${safeCourse}_${DateTime.now().millisecondsSinceEpoch}.pdf';
 
       await File(outputPath).writeAsBytes(bytes);
     }
 
-    // Save path to SharedPreferences
+    // Save to preferences
     final prefs = await SharedPreferences.getInstance();
     List<String> paths = prefs.getStringList('pdf_paths') ?? [];
     paths.add(outputPath);

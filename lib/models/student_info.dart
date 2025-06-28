@@ -1,14 +1,18 @@
 class StudentInfo {
   String name;
-  String roll;
+  String registrationId;
+  String program;
   String batch;
-  String subject;
+  String roll;
+  String courseName;
 
   StudentInfo({
     this.name = '',
-    this.roll = '',
+    this.registrationId = '',
+    this.program = '',
     this.batch = '',
-    this.subject = '',
+    this.roll = '',
+    this.courseName = '',
   });
 
   static StudentInfo current = StudentInfo();

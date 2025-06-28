@@ -46,28 +46,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _editDefaultStudentInfo() async {
     final prefs = await SharedPreferences.getInstance();
+
     final controllerName = TextEditingController(text: prefs.getString('name') ?? '');
-    final controllerRoll = TextEditingController(text: prefs.getString('roll') ?? '');
+    final controllerRegId = TextEditingController(text: prefs.getString('registrationId') ?? '');
+    final controllerProgram = TextEditingController(text: prefs.getString('program') ?? '');
     final controllerBatch = TextEditingController(text: prefs.getString('batch') ?? '');
+    final controllerRoll = TextEditingController(text: prefs.getString('roll') ?? '');
 
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Set Default Student Info'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: controllerName, decoration: const InputDecoration(labelText: 'Name')),
-            TextField(controller: controllerRoll, decoration: const InputDecoration(labelText: 'Roll')),
-            TextField(controller: controllerBatch, decoration: const InputDecoration(labelText: 'Batch')),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(controller: controllerName, decoration: const InputDecoration(labelText: 'Name')),
+              TextField(controller: controllerRegId, decoration: const InputDecoration(labelText: 'Registration ID')),
+              TextField(controller: controllerProgram, decoration: const InputDecoration(labelText: 'Program')),
+              TextField(controller: controllerBatch, decoration: const InputDecoration(labelText: 'Batch')),
+              TextField(controller: controllerRoll, decoration: const InputDecoration(labelText: 'Roll Number')),
+            ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () async {
               await prefs.setString('name', controllerName.text);
-              await prefs.setString('roll', controllerRoll.text);
+              await prefs.setString('registrationId', controllerRegId.text);
+              await prefs.setString('program', controllerProgram.text);
               await prefs.setString('batch', controllerBatch.text);
+              await prefs.setString('roll', controllerRoll.text);
               Navigator.pop(context);
             },
             child: const Text('Save'),
@@ -76,6 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+
 
   void _openPdf(File file) {
     ScaffoldMessenger.of(context).showSnackBar(

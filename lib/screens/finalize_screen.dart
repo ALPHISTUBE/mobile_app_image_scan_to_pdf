@@ -16,9 +16,11 @@ class _FinalizeScreenState extends State<FinalizeScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final nameController = TextEditingController();
-  final rollController = TextEditingController();
+  final regIdController = TextEditingController();
+  final programController = TextEditingController();
   final batchController = TextEditingController();
-  final subjectController = TextEditingController();
+  final rollController = TextEditingController();
+  final courseNameController = TextEditingController();
 
   @override
   void initState() {
@@ -30,17 +32,22 @@ class _FinalizeScreenState extends State<FinalizeScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       nameController.text = prefs.getString('name') ?? '';
-      rollController.text = prefs.getString('roll') ?? '';
+      regIdController.text = prefs.getString('registrationId') ?? '';
+      programController.text = prefs.getString('program') ?? '';
       batchController.text = prefs.getString('batch') ?? '';
+      rollController.text = prefs.getString('roll') ?? '';
+      courseNameController.text = prefs.getString('courseName') ?? '';
     });
   }
 
   @override
   void dispose() {
     nameController.dispose();
-    rollController.dispose();
+    regIdController.dispose();
+    programController.dispose();
     batchController.dispose();
-    subjectController.dispose();
+    rollController.dispose();
+    courseNameController.dispose();
     super.dispose();
   }
 
@@ -68,23 +75,31 @@ class _FinalizeScreenState extends State<FinalizeScreen> {
             Expanded(
               child: Form(
                 key: _formKey,
-                child: Column(
+                child: ListView(
                   children: [
                     TextFormField(
                       controller: nameController,
                       decoration: const InputDecoration(labelText: 'Name'),
                     ),
                     TextFormField(
-                      controller: rollController,
-                      decoration: const InputDecoration(labelText: 'Roll Number'),
+                      controller: regIdController,
+                      decoration: const InputDecoration(labelText: 'Registration ID'),
+                    ),
+                    TextFormField(
+                      controller: programController,
+                      decoration: const InputDecoration(labelText: 'Program'),
                     ),
                     TextFormField(
                       controller: batchController,
                       decoration: const InputDecoration(labelText: 'Batch'),
                     ),
                     TextFormField(
-                      controller: subjectController,
-                      decoration: const InputDecoration(labelText: 'Subject'),
+                      controller: rollController,
+                      decoration: const InputDecoration(labelText: 'Roll Number'),
+                    ),
+                    TextFormField(
+                      controller: courseNameController,
+                      decoration: const InputDecoration(labelText: 'Course Name'),
                     ),
                   ],
                 ),
@@ -92,12 +107,24 @@ class _FinalizeScreenState extends State<FinalizeScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                // Save input data to model
                 StudentInfo.current = StudentInfo(
                   name: nameController.text,
-                  roll: rollController.text,
+                  registrationId: regIdController.text,
+                  program: programController.text,
                   batch: batchController.text,
-                  subject: subjectController.text,
+                  roll: rollController.text,
+                  courseName: courseNameController.text,
                 );
+
+                // Persist data for next time
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setString('name', nameController.text);
+                await prefs.setString('registrationId', regIdController.text);
+                await prefs.setString('program', programController.text);
+                await prefs.setString('batch', batchController.text);
+                await prefs.setString('roll', rollController.text);
+                await prefs.setString('courseName', courseNameController.text);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Saved: ${nameController.text}, Roll: ${rollController.text}')),

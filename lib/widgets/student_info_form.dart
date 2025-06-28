@@ -32,7 +32,7 @@ class _StudentInfoFormState extends State<StudentInfoForm> {
           ),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Subject'),
-            onSaved: (value) => info.subject = value ?? '',
+            onSaved: (value) => info.courseName  = value ?? '',
           ),
           const SizedBox(height: 20),
           ElevatedButton(

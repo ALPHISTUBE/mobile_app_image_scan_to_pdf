@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Assignment Scanner',
+      title: 'PaperSnap',
       theme: ThemeData(primarySwatch: Colors.deepPurple),
       home: const HomeScreen(),
     );

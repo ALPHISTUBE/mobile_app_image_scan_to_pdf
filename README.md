@@ -9,8 +9,7 @@ _A simple Flutter app to scan handwritten exam papers, input student info, and g
 
 ## 🚀 Download
 
-**[⬇️ Download Latest Release (APK)](https://example.com/releases/papersnap-v1.0.0.apk)**  
-*Replace the link with your actual hosted `.apk` file (GitHub Releases, Drive, etc.)*
+**[⬇️ Download Latest Release (APK)](https://github.com/ALPHISTUBE/mobile_app_image_scan_to_pdf/releases/download/v0.2.0/PaperSnap_0_2_beta.apk)**
 
 ---
 
